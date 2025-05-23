@@ -1,28 +1,38 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-
-// Import the functions to test from popup.js (if modularized)
-// import { functionToTest } from '../popup.js';
-
-describe('Popup Functionality', () => {
+// Popup functionality tests
+describe('Chrome Extension Popup', () => {
   beforeEach(() => {
-    // Reset mocks before each test
-    vi.resetAllMocks();
+    // Simulate popup HTML
+    document.body.innerHTML = `
+      <div id="popup-container">
+        <button id="action-button">Perform Action</button>
+      </div>
+    `;
   });
 
-  it('should initialize chrome extension popup', () => {
-    // Basic initialization test
-    expect(document).toBeTruthy();
+  test('chrome runtime is mocked correctly', () => {
+    expect(chrome).toBeDefined();
+    expect(chrome.runtime.sendMessage).toBeDefined();
   });
 
-  it('should handle chrome runtime communication', () => {
-    // Test message sending functionality
-    chrome.runtime.sendMessage.mockImplementation((message, callback) => {
-      expect(message).toBeDefined();
-    });
-
-    // Simulate sending a message
-    chrome.runtime.sendMessage({ type: 'TEST_MESSAGE' });
+  test('can send message through chrome runtime', () => {
+    const mockMessage = { type: 'TEST_ACTION' };
     
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledOnce();
+    chrome.runtime.sendMessage(mockMessage);
+    
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(mockMessage);
+  });
+
+  test('popup DOM is accessible', () => {
+    const actionButton = document.getElementById('action-button');
+    expect(actionButton).not.toBeNull();
+  });
+
+  test('can interact with chrome storage', async () => {
+    const testData = { key: 'testValue' };
+    
+    await chrome.storage.sync.set(testData);
+    const retrievedData = await chrome.storage.sync.get('key');
+    
+    expect(retrievedData.key).toBe('testValue');
   });
 });
