@@ -1,5 +1,8 @@
 // Jest test setup for MailGeek Chrome Extension
-import './chrome-mock.js';
+const createChromeMock = require('./chrome-mock.js');
+
+// Create global Chrome mock
+global.chrome = createChromeMock();
 
 // Additional global setup
 beforeEach(() => {
