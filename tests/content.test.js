@@ -1,37 +1,40 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-
-describe('Content Script Functionality', () => {
+// Content script tests
+describe('Chrome Extension Content Script', () => {
   beforeEach(() => {
-    // Reset DOM and mocks before each test
-    document.body.innerHTML = '';
-    vi.resetAllMocks();
+    // Simulate a basic webpage context
+    document.body.innerHTML = `
+      <div id="test-container">
+        <span class="email-marker"></span>
+      </div>
+    `;
   });
 
-  it('should have access to document', () => {
-    expect(document).toBeTruthy();
+  test('chrome runtime message listener can be added', () => {
+    const mockListener = jest.fn();
+    chrome.runtime.onMessage.addListener(mockListener);
+    
+    expect(chrome.runtime.onMessage.addListener).toHaveBeenCalledWith(mockListener);
   });
 
-  it('should handle chrome message listeners', () => {
-    // Test message listener setup
-    const mockListener = vi.fn();
-    chrome.runtime.onMessage.addListener.mockImplementation((listener) => {
-      listener = mockListener;
-    });
-
-    // Simulate message listener registration
-    chrome.runtime.onMessage.addListener((message) => {
-      expect(message).toBeDefined();
-    });
-
-    expect(chrome.runtime.onMessage.addListener).toHaveBeenCalledOnce();
+  test('can send messages to runtime', () => {
+    const testMessage = { type: 'EMAIL_DETECTED', data: 'test@example.com' };
+    
+    chrome.runtime.sendMessage(testMessage);
+    
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(testMessage);
   });
 
-  it('should interact with page elements', () => {
-    // Create a mock element to test interactions
-    const testElement = document.createElement('div');
-    testElement.id = 'test-element';
-    document.body.appendChild(testElement);
+  test('content script can interact with page DOM', () => {
+    const emailMarker = document.querySelector('.email-marker');
+    expect(emailMarker).not.toBeNull();
+  });
 
-    expect(document.getElementById('test-element')).toBeTruthy();
+  test('chrome storage can be used in content script', async () => {
+    const testSettings = { enableEmailDetection: true };
+    
+    await chrome.storage.sync.set(testSettings);
+    const retrievedSettings = await chrome.storage.sync.get('enableEmailDetection');
+    
+    expect(retrievedSettings.enableEmailDetection).toBe(true);
   });
 });
