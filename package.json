@@ -4,6 +4,8 @@
     "test:watch": "vitest watch"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
+    "jsdom": "^26.1.0",
     "vitest": "^3.1.4"
   }
 }
