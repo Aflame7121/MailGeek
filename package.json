@@ -5,12 +5,17 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
-    "moduleDirectories": ["node_modules", "<rootDir>"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>"
+    ]
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
-    "jest": "^29.6.1",
-    "jest-environment-jsdom": "^29.6.1"
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }

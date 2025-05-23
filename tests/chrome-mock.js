@@ -2,21 +2,21 @@
  * Comprehensive Chrome Extension API Mock Utility
  * Provides a flexible and extensible mocking environment for Chrome extension testing
  */
-export const createChromeMock = () => {
+module.exports = () => {
   // Storage mock with get/set functionality
   const storageMock = {
     _storage: {},
     get: jest.fn((keys, callback) => {
       const result = {};
       if (typeof keys === 'string') {
-        result[keys] = this._storage[keys];
+        result[keys] = storageMock._storage[keys];
       } else if (Array.isArray(keys)) {
         keys.forEach(key => {
-          result[key] = this._storage[key];
+          result[key] = storageMock._storage[key];
         });
       } else if (typeof keys === 'object') {
         Object.keys(keys).forEach(key => {
-          result[key] = this._storage[key] || keys[key];
+          result[key] = storageMock._storage[key] || keys[key];
         });
       }
       
@@ -27,7 +27,7 @@ export const createChromeMock = () => {
     }),
     set: jest.fn((items, callback) => {
       Object.keys(items).forEach(key => {
-        this._storage[key] = items[key];
+        storageMock._storage[key] = items[key];
       });
       
       if (callback) {
@@ -36,7 +36,7 @@ export const createChromeMock = () => {
       return Promise.resolve();
     }),
     clear: jest.fn(() => {
-      this._storage = {};
+      storageMock._storage = {};
       return Promise.resolve();
     })
   };
@@ -49,7 +49,7 @@ export const createChromeMock = () => {
       return new Promise((resolve) => {
         setTimeout(() => {
           // Optionally trigger listeners
-          this._listeners.forEach(listener => {
+          runtimeMock._listeners.forEach(listener => {
             listener(message, {}, () => {});
           });
           
@@ -103,6 +103,3 @@ export const createChromeMock = () => {
     }
   };
 };
-
-// Create a global Chrome mock
-global.chrome = createChromeMock();
