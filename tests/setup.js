@@ -1,25 +1,14 @@
-// Global test setup for MailGeek Chrome Extension
-// Mocking Chrome extension APIs and global functions
+// Jest test setup for MailGeek Chrome Extension
+import './chrome-mock.js';
 
-// Mock Chrome extension APIs
-global.chrome = {
-  runtime: {
-    sendMessage: vi.fn(),
-    onMessage: {
-      addListener: vi.fn(),
-    },
-  },
-  storage: {
-    sync: {
-      get: vi.fn(),
-      set: vi.fn(),
-    },
-  },
-  tabs: {
-    query: vi.fn(),
-    sendMessage: vi.fn(),
-  },
-};
-
-// Mock jQuery if used in extension
-global.$ = vi.fn();
+// Additional global setup
+beforeEach(() => {
+  // Reset Chrome mock before each test
+  global.chrome._reset();
+  
+  // Clear all mocks
+  jest.clearAllMocks();
+  
+  // Reset DOM
+  document.body.innerHTML = '';
+});
