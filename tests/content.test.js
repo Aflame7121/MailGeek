@@ -3,6 +3,9 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 // Mocking browser extension APIs
 global.chrome = {
   runtime: {
+    onMessage: {
+      addListener: vi.fn()
+    },
     sendMessage: vi.fn()
   },
   storage: {
@@ -14,25 +17,22 @@ global.chrome = {
 };
 
 describe('Content Script', () => {
-  let contentModule;
-
   beforeEach(async () => {
     // Reset mocks before each test
     vi.resetAllMocks();
     
     // Dynamically import the content script
-    contentModule = await import('../content.js');
+    await import('../content.js');
   });
 
-  it('should have core functionality defined', () => {
-    expect(contentModule).toBeDefined();
-    // Add specific tests for content.js functionality
+  it('should set up runtime message listener', () => {
+    const mockAddListener = vi.spyOn(chrome.runtime.onMessage, 'addListener');
+    expect(mockAddListener).toHaveBeenCalled();
   });
 
-  it('should handle browser extension message passing', () => {
-    // Example test for message handling
-    const mockSendMessage = vi.spyOn(chrome.runtime, 'sendMessage');
-    // Add specific test scenarios for message passing
-    expect(mockSendMessage).toBeDefined();
+  it('should have core variables defined', () => {
+    // Note: This assumes the variables are global in the content script
+    expect(global.button_Active).toBeDefined();
+    expect(global.image_shower).toBeDefined();
   });
 });
