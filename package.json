@@ -12,6 +12,7 @@
   "devDependencies": {
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
+    "jsdom": "^26.1.0",
     "vitest": "^0.33.0"
   }
 }

@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import $ from 'jquery'; // Import jQuery
 
-// Mocking browser extension APIs
+// Mocking browser extension APIs and jQuery
+global.$ = $;
 global.chrome = {
   tabs: {
     query: vi.fn()
@@ -10,20 +12,24 @@ global.chrome = {
   }
 };
 
-describe('Popup Script', () => {
-  let popupModule;
+// Mock the DOM elements
+document.body.innerHTML = `
+  <div id="ll"></div>
+`;
 
+describe('Popup Script', () => {
   beforeEach(async () => {
     // Reset mocks before each test
     vi.resetAllMocks();
     
     // Dynamically import the popup script
-    popupModule = await import('../popup.js');
+    await import('../popup.js');
   });
 
-  it('should have core functionality defined', () => {
-    expect(popupModule).toBeDefined();
-    // Add specific tests for popup.js functionality
+  it('should initialize jQuery functionality', () => {
+    const $ll = $('#ll');
+    expect($ll.length).toBe(1);
+    expect($ll.text()).toBe("Turn Off");
   });
 
   it('should handle tab querying', () => {
